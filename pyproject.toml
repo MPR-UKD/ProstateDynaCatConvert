@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "xml2nii"
+version = "0.0.1"
+description = "comming soon"
+authors = ["Karl Ludger Radke"]
+license = "GNU GENERAL PUBLIC LICENSE Version 3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
