@@ -36,22 +36,18 @@ jobs:
 
       - name: Rename executable
         run: |
-          ${{ if matrix.os == 'windows-latest' }}; then
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
             mv dist/ProstateDynaCatConvert.exe dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe
-          ${{ else }}
+          else
             mv dist/ProstateDynaCatConvert dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert
-          ${{ endif }}
+          fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-executable
-          path: |
-            ${{ if matrix.os == 'windows-latest' }}
-            dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe
-            ${{ else }}
-            dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert
-            ${{ endif }}
+          path: dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert${{ if matrix.os == 'windows-latest' }}.exe${{ endif }}
+
 
 
   release:
