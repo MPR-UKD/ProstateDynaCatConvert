@@ -14,6 +14,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      SUFFIX: ${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
     steps:
       - name: Checkout code
@@ -36,19 +38,13 @@ jobs:
 
       - name: Rename executable
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv dist/ProstateDynaCatConvert.exe dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe
-          else
-            mv dist/ProstateDynaCatConvert dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert
-          fi
+          mv dist/ProstateDynaCatConvert$SUFFIX dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-executable
-          path: dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert${{ if matrix.os == 'windows-latest' }}.exe${{ endif }}
-
-
+          path: dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX
 
   release:
     needs: build
@@ -66,5 +62,5 @@ jobs:
         with:
           upload_url: ${{ github.event.repository.releases_url }}
           asset_path: ./dist
-          asset_name: xml2nii-${{ github.event.inputs.version }}.zip
+          asset_name: ProstateDynaCatConvert-${{ github.event.inputs.version }}.zip
           asset_content_type: application/zip
