@@ -36,7 +36,7 @@ jobs:
 
       - name: Rename executable
         run: |
-          mv dist/main dist/${{ github.event.inputs.version }}-${{ matrix.os }}-main
+          mv dist/ProstateDynaCatConvert dist/${{ github.event.inputs.version }}-${{ matrix.os }}-main
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
