@@ -1,0 +1,64 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (z.B. 1.0.0)'
+        required: true
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Build with PyInstaller
+        run: |
+          poetry run pyinstaller --onefile ProstateDynaCatConvert.py
+
+      - name: Rename executable
+        run: |
+          mv dist/main dist/${{ github.event.inputs.version }}-${{ matrix.os }}-main
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-executable
+          path: dist/${{ github.event.inputs.version }}-${{ matrix.os }}-main
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: dist
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.repository.releases_url }}
+          asset_path: ./dist
+          asset_name: xml2nii-${{ github.event.inputs.version }}.zip
+          asset_content_type: application/zip
