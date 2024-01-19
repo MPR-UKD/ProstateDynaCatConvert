@@ -34,16 +34,19 @@ jobs:
         run: |
           poetry run pyinstaller --noconfirm --onefile src/ProstateDynaCatConvert.py
 
-      - name: Rename executable
+      - name: Rename executable Windows
+        if: matrix.os == 'windows-latest'
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            SUFFIX=".exe"
-            PowerShell -Command "Move-Item -Path 'dist/ProstateDynaCatConvert$SUFFIX' -Destination 'dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX'"
-          else
-            SUFFIX=""
-            mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
-          fi
+          $SUFFIX = ".exe"
+          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+        shell: pwsh
 
+      - name: Rename executable (UNIX)
+        if: matrix.os != 'windows-latest'
+        run: |
+          SUFFIX=""
+          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+        shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
