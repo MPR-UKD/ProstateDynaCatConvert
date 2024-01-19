@@ -38,10 +38,12 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             SUFFIX=".exe"
+            PowerShell -Command "Move-Item -Path 'dist/ProstateDynaCatConvert$SUFFIX' -Destination 'dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX'"
           else
             SUFFIX=""
+            mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
           fi
-          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
