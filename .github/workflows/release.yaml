@@ -48,11 +48,19 @@ jobs:
           mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
-      - name: Upload Artifact
+      - name: Upload Artifact (Windows=
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-executable
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe"
+
+      - name: Upload Artifact (UNIX)
+        if: matrix.os != 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-executable
+          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
 
 
   release:
