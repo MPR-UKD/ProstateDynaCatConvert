@@ -38,24 +38,24 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $SUFFIX = ".exe"
-          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/EXE/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: pwsh
 
       - name: Rename executable (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
           SUFFIX=""
-          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/EXE/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
       - name: Zip the executable (Windows)
         if: matrix.os == 'windows-latest'
-        run: Compress-Archive -Path "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+        run: Compress-Archive -Path "dist/EXE" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
         shell: pwsh
 
       - name: Zip the executable (UNIX)
         if: matrix.os != 'windows-latest'
-        run: zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
+        run: zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" dist/EXE"
         shell: bash
 
       - name: Upload Artifact (Windows)
