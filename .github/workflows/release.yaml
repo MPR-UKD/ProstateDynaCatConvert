@@ -44,9 +44,9 @@ jobs:
         run: |
           mkdir -p package
           if [ ${{ runner.os }} = "Windows" ]; then
-            Compress-Archive -Path "dist" -DestinationPath "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+            Compress-Archive -Path "./dist" -DestinationPath "${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
           else
-            zip -j "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/*"
+            zip -j "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "./dist/*"
           fi
         shell: bash
 
