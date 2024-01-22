@@ -38,7 +38,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $SUFFIX = ".exe"
-          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert$SUFFIX"
+          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
           Compress-Archive -Path "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
         shell: pwsh
 
@@ -46,7 +46,7 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           SUFFIX=""
-          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert$SUFFIX"
+          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
           zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
@@ -55,14 +55,14 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "dist/${{ matrix.os }}-${{ github.event.inputs.version }}--ProstateDynaCatConvert.zip"
+          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
 
       - name: Upload Artifact (UNIX)
         if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip"
+          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
 
 
   release:
@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_path: ./packages/${{ github.event.inputs.version }}-windows-latest-ProstateDynaCatConvert.zip
           asset_name: windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
           asset_content_type: application/zip
 
@@ -123,7 +123,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_path: ./packages/${{ github.event.inputs.version }}-macos-latest-ProstateDynaCatConvert.zip
           asset_name: macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
           asset_content_type: application/zip
 
