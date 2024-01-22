@@ -34,36 +34,21 @@ jobs:
         run: |
           poetry run pyinstaller --noconfirm --onefile src/ProstateDynaCatConvert.py
 
-      - name: Rename executable Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          $SUFFIX = ".exe"
-          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
-        shell: pwsh
-
-      - name: Rename executable (UNIX)
-        if: matrix.os != 'windows-latest'
-        run: |
-          SUFFIX=""
-          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
-        shell: bash
-
       - name: Zip executable Windows
         if: matrix.os == 'windows-latest'
         run: |
-          Compress-Archive -Path "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+          Compress-Archive -Path "dist" -DestinationPath "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
         shell: pwsh
 
       - name: Zip executable (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
-          zip -j "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
-
+          zip -j "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+          path: "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
 
 
 
