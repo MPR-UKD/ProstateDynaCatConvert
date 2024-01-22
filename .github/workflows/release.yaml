@@ -55,14 +55,14 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+          path: "dist/${{ matrix.os }}-${{ github.event.inputs.version }}--ProstateDynaCatConvert.zip"
 
       - name: Upload Artifact (UNIX)
         if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+          path: "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip"
 
 
   release:
