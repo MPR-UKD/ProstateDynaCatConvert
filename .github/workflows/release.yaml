@@ -38,7 +38,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $SUFFIX = ".exe"
-          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+          Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert$SUFFIX"
           Compress-Archive -Path "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
         shell: pwsh
 
@@ -46,7 +46,7 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           SUFFIX=""
-          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
+          mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert$SUFFIX"
           zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
