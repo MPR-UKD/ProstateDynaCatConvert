@@ -89,6 +89,10 @@ jobs:
         with:
           path: dist
 
+      - name: List files in dist
+        run: ls -l ./dist/
+
+
       - name: Upload Windows Release Asset
         uses: actions/upload-release-asset@v1
         with:
