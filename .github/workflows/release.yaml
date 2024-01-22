@@ -52,14 +52,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-executable
+          name: ${{ matrix.os }}-ProstateDynaCatConvert.exe
           path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe"
 
       - name: Upload Artifact (UNIX)
         if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-executable
+          name: ${{ matrix.os }}-ProstateDynaCatConvert
           path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
 
 
@@ -76,22 +76,22 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.repository.releases_url }}
-          asset_path: ./dist/ProstateDynaCatConvert-windows.zip
-          asset_name: ProstateDynaCatConvert-windows-${{ github.event.inputs.version }}.zip
+          asset_path: ./dist/windows-latest-ProstateDynaCatConvert.exe
+          asset_name: windows-latest-ProstateDynaCatConvert.exe
           asset_content_type: application/zip
 
       - name: Upload macOS Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.repository.releases_url }}
-          asset_path: ./dist/ProstateDynaCatConvert-macos-latest.zip
-          asset_name: ProstateDynaCatConvert-macos-${{ github.event.inputs.version }}.zip
+          asset_path: ./dist/macos-latest-ProstateDynaCatConvert
+          asset_name: macos-latest-ProstateDynaCatConvert
           asset_content_type: application/zip
 
       - name: Upload Ubuntu Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.repository.releases_url }}
-          asset_path: ./dist/ProstateDynaCatConvert-ubuntu-latest.zip
-          asset_name: ProstateDynaCatConvert-ubuntu-${{ github.event.inputs.version }}.zip
+          asset_path: ./dist/ubuntu-latest-ProstateDynaCatConvert
+          asset_name: ubuntu-latest-ProstateDynaCatConvert
           asset_content_type: application/zip
