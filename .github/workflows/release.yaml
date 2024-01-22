@@ -57,7 +57,7 @@ jobs:
 
       - name: Zip the executable (UNIX)
         if: matrix.os != 'windows-latest'
-        run: zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" dist/EXE"
+        run: zip -r0 "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/EXE"
         shell: bash
 
       - name: Upload Artifact (Windows)
