@@ -133,6 +133,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_path: ./packages/${{ github.event.inputs.version }}-ubuntu-latest-ProstateDynaCatConvert.zip
           asset_name: ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
           asset_content_type: application/zip
