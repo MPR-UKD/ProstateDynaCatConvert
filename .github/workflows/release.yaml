@@ -48,19 +48,23 @@ jobs:
           mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
-      - name: Upload Artifact (Windows)
+      - name: Zip executable Windows
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.exe
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe"
+        run: |
+          Compress-Archive -Path "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.exe" -DestinationPath "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+        shell: pwsh
 
-      - name: Upload Artifact (UNIX)
+      - name: Zip executable (UNIX)
         if: matrix.os != 'windows-latest'
+        run: |
+          zip -j "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert
-          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert"
+          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+
 
 
   release:
@@ -97,22 +101,22 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.exe
-          asset_name: windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.exe
-          asset_content_type: application/octet-stream
+          asset_path: ./dist/windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_name: windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_content_type: application/zip
 
       - name: Upload macOS Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert
-          asset_name: macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert
-          asset_content_type: application/octet-stream
+          asset_path: ./dist/macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_name: macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_content_type: application/zip
 
       - name: Upload Ubuntu Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert
-          asset_name: ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert
-          asset_content_type: application/octet-stream
+          asset_path: ./dist/ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_name: ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
+          asset_content_type: application/zip
