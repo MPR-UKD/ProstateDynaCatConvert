@@ -89,10 +89,6 @@ jobs:
         with:
           path: dist
 
-      - name: Debug release step
-        run: |
-          run ls -l ./dist/
-
       - name: Upload Windows Release Asset
         uses: actions/upload-release-asset@v1
         with:
