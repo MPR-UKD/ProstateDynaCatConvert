@@ -62,14 +62,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert
+          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
           path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
 
       - name: Upload Artifact (UNIX)
         if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert
+          name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
           path: "dist/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
 
 
