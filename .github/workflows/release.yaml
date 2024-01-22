@@ -14,15 +14,22 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Poetry
         run: pip install poetry
@@ -31,77 +38,51 @@ jobs:
         run: poetry install
 
       - name: Build with PyInstaller
-        run: |
-          poetry run pyinstaller --noconfirm --onefile src/ProstateDynaCatConvert.py
+        run: poetry run pyinstaller --noconfirm --onefile src/ProstateDynaCatConvert.py
 
-      - name: Zip executable Windows
-        if: matrix.os == 'windows-latest'
+      - name: Zip executable
         run: |
-          Compress-Archive -Path "dist" -DestinationPath "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
-        shell: pwsh
+          mkdir -p package
+          if [ ${{ runner.os }} = "Windows" ]; then
+            Compress-Archive -Path "dist" -DestinationPath "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
+          else
+            zip -j "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist/*"
+          fi
+        shell: bash
 
-      - name: Zip executable (UNIX)
-        if: matrix.os != 'windows-latest'
-        run: |
-          zip -j "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip" "dist"
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          path: "package/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert.zip"
-
-
+          path: package/
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Setup variables
-        run: |
-          VERSION=${{ github.event.inputs.version }}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.VERSION }}
-          commitish: ${{ github.event.inputs.gitref }}
-          release_name: Release ${{ env.VERSION }}
-          draft: false
-          prerelease: false
-
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: dist
 
-      - name: List files in dist
-        run: ls -l ./dist/
-
-
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_name: windows-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_content_type: application/zip
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
 
-      - name: Upload macOS Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_name: macos-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_content_type: application/zip
-
-      - name: Upload Ubuntu Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_name: ubuntu-latest-${{ github.event.inputs.version }}-ProstateDynaCatConvert.zip
-          asset_content_type: application/zip
+      - name: Upload Release Assets
+        run: |
+          for file in dist/*.zip; do
+            echo "Uploading $file"
+            curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                 -H "Content-Type: $(file -b --mime-type $file)" \
+                 --data-binary @$file \
+                 ${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)
+          done
+        shell: bash
