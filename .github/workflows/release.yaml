@@ -38,6 +38,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           $SUFFIX = ".exe"
+          mkdir dist/EXE
           Move-Item -Path "dist/ProstateDynaCatConvert$SUFFIX" -Destination "dist/EXE/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: pwsh
 
@@ -45,6 +46,7 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           SUFFIX=""
+          mkdir dist/EXE
           mv "dist/ProstateDynaCatConvert$SUFFIX" "dist/EXE/${{ github.event.inputs.version }}-${{ matrix.os }}-ProstateDynaCatConvert$SUFFIX"
         shell: bash
 
