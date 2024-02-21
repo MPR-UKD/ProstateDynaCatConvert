@@ -21,21 +21,27 @@ def create_masks_from_contours(
         np.ndarray: A 3D numpy array representing the binary mask.
     """
     # Convert contours to a numpy array
-    contours = np.array(contours)
+    contours = np.array(contours).round().astype('int32')
     width, height, depth = dicom_array_shape
 
     # Create a convex hull from the contour points
     hull = ConvexHull(contours.reshape(-1, 3))
 
     # Generate a grid of points covering the DICOM array dimensions
-    x, y, z = np.meshgrid(np.arange(width), np.arange(height), np.arange(depth))
+    x, y, z = np.meshgrid(np.arange(height), np.arange(width), np.arange(depth))
     grid_points = np.vstack([x.ravel(), y.ravel(), z.ravel()]).T
 
     # Use Delaunay triangulation to create a mask from the convex hull
     delaunay = Delaunay(contours[hull.vertices])
     mask = delaunay.find_simplex(grid_points) >= 0
+    mask = mask.reshape(width, height, depth).astype(np.int16)
+    keep = np.all(contours >= 0, axis=1)
 
-    return mask.reshape(width, height, depth).astype(np.int16)
+    for i in range(contours.shape[0]):
+        if keep[i]:
+            x, y, z = contours[i]
+            mask[y, x, z] = 2
+    return mask
 
 def save_nifti(mask_array: np.ndarray, output_file: Union[str, Path]):
     """

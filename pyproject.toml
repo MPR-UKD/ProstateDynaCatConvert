@@ -16,6 +16,9 @@ matplotlib = "^3.8.2"
 pillow = "^10.1.0"
 simpleitk = "^2.3.1"
 pyinstaller = "^6.3.0"
+scipy = "^1.12.0"
+opencv-python = "^4.9.0.80"
+scikit-image = "^0.22.0"
 
 
 [build-system]

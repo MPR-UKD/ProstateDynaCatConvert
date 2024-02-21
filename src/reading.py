@@ -20,7 +20,7 @@ def read_dicom_series(dicom_folder: Union[str, Path]) -> Tuple[sitk.Image, List[
     dicom_names = reader.GetGDCMSeriesFileNames(str(dicom_folder))
     reader.SetFileNames(dicom_names)
     image: sitk.Image = reader.Execute()
-    dicom_shape = [image.GetWidth(), image.GetHeight(), image.GetDepth()]
+    dicom_shape = [image.GetHeight(), image.GetWidth(), image.GetDepth()]
     return image, dicom_shape
 
 def parse_xml_contours(
